@@ -9,6 +9,6 @@ This repo has been deployed on AWS cloud service and realizing CI/CD.
 
 ScreenShot folder shows a demo of my web app.
 
-<div style="width:450px" align=center><img width="400" height="400" alt="Upload File" src="https://github.com/lidall/cvViewer/blob/master/screenshot/upload_pdf.png"/></div>
-<div style="width:450px" align=center><img width="400" height="400" alt="Result" src="https://github.com/lidall/cvViewer/blob/master/screenshot/result_pdf.png"/>
+<div style="width:450px" align=center><img width="800" height="400" alt="Upload File" src="https://github.com/lidall/cvViewer/blob/master/screenshot/upload_pdf.png"/></div>
+<div style="width:450px" align=center><img width="800" height="400" alt="Result" src="https://github.com/lidall/cvViewer/blob/master/screenshot/result_pdf.png"/>
 </div>
