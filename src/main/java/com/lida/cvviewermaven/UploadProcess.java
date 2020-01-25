@@ -1,7 +1,5 @@
 
-
 package com.lida.cvviewermaven;
-
 
 import java.io.File;
 import java.io.IOException;
@@ -30,14 +28,10 @@ import org.apache.tika.sax.BodyContentHandler;
 
 public class UploadProcess extends HttpServlet {
     
-    //Keep in mind that this file path is for Linux OS
     private String filePath = "/home/ubuntu/uploadfile";
-    
-    
     private String strParser(String targetStr){
         
-      String outputStr = "";
-                
+      String outputStr = "";    
       String name = "";
       String phone = "";
       String email = "";
@@ -45,57 +39,57 @@ public class UploadProcess extends HttpServlet {
       String education = "";
       String area = "";
       int lineIndex = 0;
+        
       for(String ele: targetStr.split("\n")){
-     if (!ele.replace(" ", "").equals("") && !ele.contains("Page")){
-         name = ele;
-         break;
-     }
-
-    }
+         if (!ele.replace(" ", "").equals("") && !ele.contains("Page")){
+             name = ele;
+             break;
+            }
+      }
       
-      String regexPhoneStr = "^[0-9]{9}$";
+     String regexPhoneStr = "^[0-9]{9}$";
       
-      for(String ele: targetStr.split("\n")){
+     for(String ele: targetStr.split("\n")){
 
-     if (ele.contains("Phone")){
-         if (!ele.split(":")[1].replace(" ", "").equals("")){
-             phone = ele.split(":")[1];
-         }else{
-         phone = targetStr.split("\n")[lineIndex+1];}
-     } else if (ele.matches(regexPhoneStr)){
-         System.out.println("match: " + ele);
-         phone = ele;
-     }
-     
-     if (ele.contains("E-mail")){
-         if (!ele.split(":")[1].replace(" ", "").equals("")){
-             email = ele.split(":")[1];
-         }else{
-         email = targetStr.split("\n")[lineIndex+1];}
-     } else if (ele.contains("@") && ele.contains(".com")){
-         email = ele;
-     }
-     
-     if (ele.contains("Title")){
-         if (!ele.split(":")[1].replace(" ", "").equals("")){
-             title = ele.split(":")[1];
-         }else{
-         title = targetStr.split("\n")[lineIndex+1];}
-     }
-     if (ele.contains("Education")){
-         if (!ele.split(":")[1].replace(" ", "").equals("")){
-             education = ele.split(":")[1];
-         }else{
-         education = targetStr.split("\n")[lineIndex+1];}
-     }
-     if (ele.contains("Area of expertise")){
-         if (!ele.split(":")[1].replace(" ", "").equals("")){
-             area = ele.split(":")[1].replace(",", "");
-         }else{
-         area = targetStr.split("\n")[lineIndex+1].replace(",", "");}
-     }
-     
-     lineIndex ++;
+         if (ele.contains("Phone")){
+             if (!ele.split(":")[1].replace(" ", "").equals("")){
+                 phone = ele.split(":")[1];
+             }else{
+             phone = targetStr.split("\n")[lineIndex+1];}
+         }else if (ele.matches(regexPhoneStr)){
+             System.out.println("match: " + ele);
+             phone = ele;
+         }
+
+         if (ele.contains("E-mail")){
+             if (!ele.split(":")[1].replace(" ", "").equals("")){
+                 email = ele.split(":")[1];
+             }else{
+             email = targetStr.split("\n")[lineIndex+1];}
+         }else if (ele.contains("@") && ele.contains(".com")){
+             email = ele;
+         }
+
+         if (ele.contains("Title")){
+             if (!ele.split(":")[1].replace(" ", "").equals("")){
+                 title = ele.split(":")[1];
+             }else{
+             title = targetStr.split("\n")[lineIndex+1];}
+         }
+         if (ele.contains("Education")){
+             if (!ele.split(":")[1].replace(" ", "").equals("")){
+                 education = ele.split(":")[1];
+             }else{
+             education = targetStr.split("\n")[lineIndex+1];}
+         }
+         if (ele.contains("Area of expertise")){
+             if (!ele.split(":")[1].replace(" ", "").equals("")){
+                 area = ele.split(":")[1].replace(",", "");
+             }else{
+             area = targetStr.split("\n")[lineIndex+1].replace(",", "");}
+         }
+
+         lineIndex ++;
 
     }
     
@@ -105,21 +99,20 @@ public class UploadProcess extends HttpServlet {
       for(String ele: targetStr.split("\n")){
           if (ele.contains("COMPUTER SKILLS")){
               int counter = 1;
-          
-         while (true){
-             if (!targetStr.split("\n")[lineIndex + counter].replace(" ", "").equals("")){
-                 computerSkill += "- " + targetStr.split("\n")[lineIndex + counter] + "<br>";
-         }else{
-                 if (!computerSkill.equals("")){
-                     break;
-                 }
-             }
-             counter ++;
-          }
-          
-      }
-          lineIndex ++;
-      }
+              while (true){
+                 if (!targetStr.split("\n")[lineIndex + counter].replace(" ", "").equals("")){
+                     computerSkill += "- " + targetStr.split("\n")[lineIndex + counter] + "<br>";
+                 }else{
+                     if (!computerSkill.equals("")){
+                         break;
+                        }
+                  }
+                   counter ++;
+               }
+
+           }
+           lineIndex ++;
+       }
 
 
       outputStr = "Candidate Name: " + name + "<br>Candidate Phone: " + phone + 
@@ -149,32 +142,26 @@ public class UploadProcess extends HttpServlet {
                         request.setAttribute("message", "Your file " + fileName + " upload Successfully ! <br>Items below show your basic Info:");
                     }
                 }
-                if (file_path.contains("pdf")){
-      BodyContentHandler handler = new BodyContentHandler();
-      Metadata metadata = new Metadata();
-      FileInputStream inputstream = new FileInputStream(new File(
-         file_path));
-      
-      ParseContext pcontext = new ParseContext();
+                    if (file_path.contains("pdf")){
+                        BodyContentHandler handler = new BodyContentHandler();
+                        Metadata metadata = new Metadata();
+                        FileInputStream inputstream = new FileInputStream(new File(file_path));
 
-      //parsing the document using PDF parser
-      PDFParser pdfparser = new PDFParser();
-      pdfparser.parse(inputstream, handler, metadata,pcontext);
-      
-      request.setAttribute("outstr", strParser(handler.toString()));
-      
-       
-    } else if (file_path.contains("docx")){
-     FileInputStream fis = new FileInputStream(file_path);
-     XWPFDocument xdoc = new XWPFDocument(OPCPackage.open(fis));
-     XWPFWordExtractor extractor = new XWPFWordExtractor(xdoc);
+                        ParseContext pcontext = new ParseContext();
 
-     
-     request.setAttribute("outstr",strParser(extractor.getText()));
-      
-     
- }
-                
+                        //parsing the document using PDF parser
+                        PDFParser pdfparser = new PDFParser();
+                        pdfparser.parse(inputstream, handler, metadata,pcontext);
+
+                        request.setAttribute("outstr", strParser(handler.toString()));
+
+
+                    } else if (file_path.contains("docx")){
+                        FileInputStream fis = new FileInputStream(file_path);
+                        XWPFDocument xdoc = new XWPFDocument(OPCPackage.open(fis));
+                        XWPFWordExtractor extractor = new XWPFWordExtractor(xdoc);
+                        request.setAttribute("outstr",strParser(extractor.getText()));
+                    }
                 
             }
             catch (Exception x) {
